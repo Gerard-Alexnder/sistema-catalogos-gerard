@@ -22,6 +22,14 @@ def agregar_producto(catalogo, nombre, precio, disponibilidad):
     return nuevo_producto
 
 
+def producto_disponible(catalogo, disponibilidad):
+    productos_disponibles = []
+    for producto in catalogo:
+        if producto["disponibilidad"] == disponibilidad:
+            productos_disponibles.append(producto)
+    return productos_disponibles
+
+
 def main():
     while True:
         print("Menu")
@@ -29,6 +37,7 @@ def main():
         print("1. Ver catalogo completo")
         print("2. Buscar un producto")
         print("3. Agregar un Producto Nuevo")
+        print("4. Ver solo los productos diponibles")
         opcion = input("Elige una opción: ")
 
         if opcion == "0":
@@ -53,6 +62,11 @@ def main():
             disponibilidad = True
             agregar_producto(catalogo_negocio, nombre, precio, disponibilidad)
             print("Producto agregado correctamente")
+
+        elif opcion == "4":
+            productos = producto_disponible(catalogo_negocio, True)
+            for producto in productos:
+                print(f"{producto['nombre']}: ${producto['precio']}")
 
 
 if __name__ == "__main__":
