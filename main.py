@@ -5,32 +5,37 @@ catalogo_negocio = [
 ]
 
 
-def buscar_producto(catalogo, nombre_buscado):
-    for producto in catalogo:
-        if producto["nombre"].lower() == nombre_buscado.lower():
-            return producto
-    return None
+class negocio:
+    def __init__(self, catalogo):
+        self.catalogo = catalogo
 
+    def ver_catalogo(self):
+        for producto in self.catalogo:
+            print(f"{producto['nombre']} ${producto['precio']}")
 
-def agregar_producto(catalogo, nombre, precio, disponibilidad):
-    nuevo_producto = {
-        "nombre": nombre,
-        "precio": precio,
-        "disponibilidad": disponibilidad,
-    }
-    catalogo.append(nuevo_producto)
-    return nuevo_producto
+    def buscar_producto(self, nombre_buscado):
+        for producto in self.catalogo:
+            if producto["nombre"].lower() == nombre_buscado.lower():
+                return producto
+        return None
+
+    def agregar_producto(self, nombre, precio_texto, disponibilidad):
+        try:
+            precio_numero = float(precio_texto)
+        except (TypeError, ValueError):
+            print("El precio debe ser un numero. Producto no agregado")
+            return None
+
+        nuevo_producto = {
+            "nombre": nombre,
+            "precio": precio_numero,
+            "disponibilidad": disponibilidad,
+        }
+        self.catalogo.append(nuevo_producto)
+        return nuevo_producto
 
 
 def producto_disponible(catalogo, disponibilidad):
-    productos_disponibles = []
-    for producto in catalogo:
-        if producto["disponibilidad"] == disponibilidad:
-            productos_disponibles.append(producto)
-    return productos_disponibles
-
-
-def main():
     while True:
         print("Menu")
         print("0. Salir")
@@ -45,12 +50,11 @@ def main():
             break
 
         elif opcion == "1":
-            for producto in catalogo_negocio:
-                print(f"{producto['nombre']}: ${producto['precio']}")
+            negocio(catalogo).ver_catalogo()
 
         elif opcion == "2":
             nombre = input("Ingrese el nombre del producto: ")
-            producto = buscar_producto(catalogo_negocio, nombre)
+            producto = negocio(catalogo).buscar_producto(nombre)
             if producto is not None:
                 print(f"{producto['nombre']}: ${producto['precio']}")
             else:
@@ -58,15 +62,23 @@ def main():
 
         elif opcion == "3":
             nombre = input("Ingrese el nombre del producto: ")
-            precio = float(input("Ingrese el precio del producto: "))
+            precio = input("Ingrese el precio del producto: ")
             disponibilidad = True
-            agregar_producto(catalogo_negocio, nombre, precio, disponibilidad)
-            print("Producto agregado correctamente")
+            resultado = negocio(catalogo).agregar_producto(nombre, precio, disponibilidad)
+            if resultado is not None:
+                print("Producto agregado correctamente")
 
         elif opcion == "4":
-            productos = producto_disponible(catalogo_negocio, True)
-            for producto in productos:
-                print(f"{producto['nombre']}: ${producto['precio']}")
+            for producto in catalogo:
+                if producto["disponibilidad"] == disponibilidad:
+                    print(f"{producto['nombre']}: ${producto['precio']}")
+
+        else:
+            print("Opción inválida")
+
+
+def main():
+    producto_disponible(catalogo_negocio, True)
 
 
 if __name__ == "__main__":
